@@ -60,8 +60,10 @@ class Generator {
 	}
 
 	public void generate(String reportTitle, Date includeCommitsAfter) throws IOException {
-			renderer.renderHeader(reportTitle);
-
+        renderer.startSection();
+		renderer.renderHeader(reportTitle);
+		renderer.startTable();
+        renderer.renderTableHeader();
 		long dateInSecondsSinceEpoch = includeCommitsAfter.getTime() / 1000;
 		for (RevCommit commit : walk) {
 			int commitTimeInSecondsSinceEpoch = commit.getCommitTime();
@@ -78,8 +80,10 @@ class Generator {
 			}
 		}
 		walk.dispose();
+		renderer.endTable();
 		renderer.renderFooter();
 		renderer.close();
+		renderer.endSection();
 	}
 
 	private boolean show(RevCommit commit) {
