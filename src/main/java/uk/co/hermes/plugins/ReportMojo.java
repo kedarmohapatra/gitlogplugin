@@ -13,19 +13,35 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-@Mojo( name = "report")
-public class ReportMojo extends AbstractMavenReport
-{
-    @Parameter( property = "fileName", defaultValue = "gitlog" )
+/**
+ * Goal which generates a changelog based on commits made to the current git repo.
+ */
+@Mojo(name = "report")
+public class ReportMojo extends AbstractMavenReport {
+
+    /**
+     * Name of the report file. Defaults to gitlog.xml
+     */
+    @Parameter(property = "fileName", defaultValue = "gitlog")
     private String fileName;
 
-    @Parameter( property = "commitsAfterDate")
+    /**
+     * Optional parameter. Will display logs since the provided date.
+     */
+    @Parameter(property = "commitsAfterDate")
     private Date commitsAfterDate;
 
-    @Parameter( property = "daysToGoBack")
+    /**
+     * Optional parameter. Only logs from the last "X" number of days will be reported
+     * If both "commitsAfterDate" and "daysToGoBack" parameter are provided then "commitsAfterDate" will be ignored
+     */
+    @Parameter(property = "daysToGoBack")
     private Integer daysToGoBack;
 
-    @Parameter( property = "reportTitle", defaultValue = "GIT RELEASE NOTES")
+    /**
+     * Title of the report defaults to "GIT RELEASE NOTES"
+     */
+    @Parameter(property = "reportTitle", defaultValue = "GIT RELEASE NOTES")
     private String reportTitle;
 
     @Parameter(property = "project.issueManagement.system")
@@ -40,13 +56,13 @@ public class ReportMojo extends AbstractMavenReport
         Generator generator = new Generator(renderer, null, getLog());
         try {
             generator.openRepository();
-            if(daysToGoBack != null){
+            if (daysToGoBack != null) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.add(Calendar.DAY_OF_MONTH, -daysToGoBack);
                 generator.generate(reportTitle, calendar.getTime());
-            }else if (commitsAfterDate != null){
+            } else if (commitsAfterDate != null) {
                 generator.generate(reportTitle, commitsAfterDate);
-            }else{
+            } else {
                 generator.generate(reportTitle);
             }
         } catch (IOException e) {
