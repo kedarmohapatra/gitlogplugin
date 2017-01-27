@@ -6,6 +6,7 @@ import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
 import uk.co.hermes.plugins.renderer.GitlogRenderer;
 
+import java.io.IOException;
 import java.util.Locale;
 
 @Mojo( name = "report")
@@ -16,8 +17,18 @@ public class ReportMojo extends AbstractMavenReport
 
     protected void executeReport(Locale locale) throws MavenReportException {
 
-        GitlogRenderer renderer = new GitlogRenderer();
-        renderer.renderBody(getSink());
+        GitlogRenderer renderer = new GitlogRenderer(getSink());
+
+        Generator generator = new Generator(renderer, null, null);
+        try {
+            generator.openRepository();
+            generator.generate("GIT RELEASE NOTES");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoGitRepositoryException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public String getOutputName() {
