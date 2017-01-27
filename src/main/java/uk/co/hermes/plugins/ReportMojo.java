@@ -9,6 +9,8 @@ import uk.co.hermes.plugins.renderer.JiraIssueLinkConverter;
 import uk.co.hermes.plugins.renderer.MessageConverter;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 @Mojo( name = "report")
@@ -17,13 +19,17 @@ public class ReportMojo extends AbstractMavenReport
     @Parameter( property = "fileName", defaultValue = "gitlog" )
     private String fileName;
 
+    @Parameter( property = "commitsAfterDate")
+    private Date commitsAfterDate;
+
+    @Parameter( property = "daysToGoBack")
+    private Integer daysToGoBack;
+
+    @Parameter( property = "reportTitle", defaultValue = "GIT RELEASE NOTES")
+    private String reportTitle;
+
     @Parameter(property = "project.issueManagement.system")
     private String issueManagementSystem;
-
-    /**
-     * Used to create links to your issue tracking system for HTML reports. If unspecified, it will try to use the value
-     * specified in the issueManagement section of your project's POM.
-     */
     @Parameter(property = "project.issueManagement.url")
     private String issueManagementUrl;
 
@@ -34,7 +40,15 @@ public class ReportMojo extends AbstractMavenReport
         Generator generator = new Generator(renderer, null, getLog());
         try {
             generator.openRepository();
-            generator.generate("GIT RELEASE NOTES");
+            if(daysToGoBack != null){
+                Calendar calendar = Calendar.getInstance();
+                calendar.add(Calendar.DAY_OF_MONTH, -daysToGoBack);
+                generator.generate(reportTitle, calendar.getTime());
+            }else if (commitsAfterDate != null){
+                generator.generate(reportTitle, commitsAfterDate);
+            }else{
+                generator.generate(reportTitle);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NoGitRepositoryException e) {

@@ -72,7 +72,7 @@ public class GitlogRenderer {
     }
 
     public void renderCommit(RevCommit commit) {
-        String date = new SimpleDateFormat("dd/MM/yyyy").format(new Date(commit.getCommitTime()));
+        String date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date(new Long(commit.getCommitTime())*1000));
         String author = htmlEncode(commit.getCommitterIdent().getName());
 
         sink.tableRow();
@@ -84,7 +84,6 @@ public class GitlogRenderer {
         sink.tableRow_();
 
     }
-
     public void renderFooter() {
 
     }
