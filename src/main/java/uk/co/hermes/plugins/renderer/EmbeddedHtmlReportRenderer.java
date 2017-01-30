@@ -13,7 +13,7 @@ import java.util.Date;
 
 import static org.apache.maven.doxia.sink.Sink.JUSTIFY_LEFT;
 
-public class GitlogRenderer {
+public class EmbeddedHtmlReportRenderer {
 
     private Sink sink;
     private final MessageConverter messageConverter;
@@ -22,7 +22,7 @@ public class GitlogRenderer {
     private SinkEventAttributeSet tagCssClass;
     private SinkEventAttributeSet titleCssClass;
 
-    public GitlogRenderer(Sink sink, MessageConverter messageConverter) {
+    public EmbeddedHtmlReportRenderer(Sink sink, MessageConverter messageConverter) {
         this.sink = sink;
         this.messageConverter = messageConverter;
         dateCssClass = new SinkEventAttributeSet("class", "git-commitdate");
@@ -72,7 +72,7 @@ public class GitlogRenderer {
     }
 
     public void renderCommit(RevCommit commit) {
-        String date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date(new Long(commit.getCommitTime())*1000));
+        String date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date((long) commit.getCommitTime() *1000));
         String author = htmlEncode(commit.getCommitterIdent().getName());
 
         sink.tableRow();

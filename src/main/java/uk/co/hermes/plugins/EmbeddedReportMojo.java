@@ -4,7 +4,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
-import uk.co.hermes.plugins.renderer.GitlogRenderer;
+import uk.co.hermes.plugins.renderer.EmbeddedHtmlReportRenderer;
 import uk.co.hermes.plugins.renderer.JiraIssueLinkConverter;
 import uk.co.hermes.plugins.renderer.MessageConverter;
 
@@ -17,12 +17,12 @@ import java.util.Locale;
  * Goal which generates a changelog based on commits made to the current git repo.
  */
 @Mojo(name = "report")
-public class ReportMojo extends AbstractMavenReport {
+public class EmbeddedReportMojo extends AbstractMavenReport {
 
     /**
      * Name of the report file. Defaults to gitlog.xml
      */
-    @Parameter(property = "fileName", defaultValue = "gitlog")
+    @Parameter(property = "fileName", defaultValue = "gitlog-embedded")
     private String fileName;
 
     /**
@@ -51,19 +51,19 @@ public class ReportMojo extends AbstractMavenReport {
 
     protected void executeReport(Locale locale) throws MavenReportException {
 
-        GitlogRenderer renderer = new GitlogRenderer(getSink(), getCommitMessageConverter());
+        EmbeddedHtmlReportRenderer renderer = new EmbeddedHtmlReportRenderer(getSink(), getCommitMessageConverter());
 
-        Generator generator = new Generator(renderer, null, getLog());
+        EmbeddedReportGenerator embeddedReportGenerator = new EmbeddedReportGenerator(renderer, null, getLog());
         try {
-            generator.openRepository();
+            embeddedReportGenerator.openRepository();
             if (daysToGoBack != null) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.add(Calendar.DAY_OF_MONTH, -daysToGoBack);
-                generator.generate(reportTitle, calendar.getTime());
+                embeddedReportGenerator.generate(reportTitle, calendar.getTime());
             } else if (commitsAfterDate != null) {
-                generator.generate(reportTitle, commitsAfterDate);
+                embeddedReportGenerator.generate(reportTitle, commitsAfterDate);
             } else {
-                generator.generate(reportTitle);
+                embeddedReportGenerator.generate(reportTitle);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -78,11 +78,11 @@ public class ReportMojo extends AbstractMavenReport {
     }
 
     public String getName(Locale locale) {
-        return "GitLog";
+        return "GitLog Embedded";
     }
 
     public String getDescription(Locale locale) {
-        return "Generate changelog from git SCM.";
+        return "Generate changelog from git SCM as an internal report";
     }
 
     private MessageConverter getCommitMessageConverter() {

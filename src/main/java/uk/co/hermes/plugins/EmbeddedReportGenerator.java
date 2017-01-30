@@ -10,21 +10,21 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
 import uk.co.hermes.plugins.filters.CommitFilter;
-import uk.co.hermes.plugins.renderer.GitlogRenderer;
+import uk.co.hermes.plugins.renderer.EmbeddedHtmlReportRenderer;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-class Generator {
+class EmbeddedReportGenerator {
 
-	private final GitlogRenderer renderer;
+	private final EmbeddedHtmlReportRenderer renderer;
 	private RevWalk walk;
 	private Map<String, List<RevTag>> commitIDToTagsMap;
 	private final List<CommitFilter> commitFilters;
 	private final Log log;
 
-	public Generator(GitlogRenderer renderer, List<CommitFilter> commitFilters, Log log) {
+	public EmbeddedReportGenerator(EmbeddedHtmlReportRenderer renderer, List<CommitFilter> commitFilters, Log log) {
 		this.renderer = renderer;
 		this.commitFilters = (commitFilters == null) ? new ArrayList<CommitFilter>() : commitFilters;
 		this.log = log;
