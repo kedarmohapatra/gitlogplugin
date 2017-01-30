@@ -79,7 +79,11 @@ public class EmbeddedHtmlReportRenderer {
         sinkCell(sink, dateCssClass,  date);
         sinkCell(sink, authorCssClass, author);
         sink.tableCell();
-        sink.rawText(messageConverter.formatCommitMessage(htmlEncode(commit.getShortMessage())));
+        if(messageConverter != null) {
+            sink.rawText(messageConverter.formatCommitMessage(htmlEncode(commit.getShortMessage())));
+        }else {
+            sink.text(htmlEncode(commit.getShortMessage()));
+        }
         sink.tableCell_();
         sink.tableRow_();
 

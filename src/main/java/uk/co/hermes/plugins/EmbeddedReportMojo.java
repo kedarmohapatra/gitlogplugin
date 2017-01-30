@@ -15,6 +15,7 @@ import java.util.Locale;
 
 /**
  * Goal which generates a changelog based on commits made to the current git repo.
+ * This requires the issue management system and the system url defined the pom for jira links to work
  */
 @Mojo(name = "report")
 public class EmbeddedReportMojo extends AbstractMavenReport {
@@ -24,7 +25,6 @@ public class EmbeddedReportMojo extends AbstractMavenReport {
      */
     @Parameter(property = "fileName", defaultValue = "gitlog-embedded")
     private String fileName;
-
     /**
      * Optional parameter. Will display logs since the provided date.
      */
@@ -44,8 +44,20 @@ public class EmbeddedReportMojo extends AbstractMavenReport {
     @Parameter(property = "reportTitle", defaultValue = "GIT RELEASE NOTES")
     private String reportTitle;
 
+    /**
+     * Report name "Release Notes"
+     */
+    @Parameter(property = "reportName", defaultValue = "Release Notes")
+    public String reportName;
+    /**
+     * Report description defaults to "Generate changelog from git SCM as an internal report"
+     */
+    @Parameter(property = "reportDescription", defaultValue = "Generate changelog from git SCM")
+    public String reportDescription;
+
     @Parameter(property = "project.issueManagement.system")
     private String issueManagementSystem;
+
     @Parameter(property = "project.issueManagement.url")
     private String issueManagementUrl;
 
@@ -78,11 +90,11 @@ public class EmbeddedReportMojo extends AbstractMavenReport {
     }
 
     public String getName(Locale locale) {
-        return "GitLog Embedded";
+        return this.reportName;
     }
 
     public String getDescription(Locale locale) {
-        return "Generate changelog from git SCM as an internal report";
+        return reportDescription;
     }
 
     private MessageConverter getCommitMessageConverter() {
@@ -90,7 +102,6 @@ public class EmbeddedReportMojo extends AbstractMavenReport {
         MessageConverter converter = null;
         try {
             if (issueManagementUrl != null && issueManagementUrl.contains("://")) {
-                String system = ("" + issueManagementSystem).toLowerCase();
                 converter = new JiraIssueLinkConverter(getLog(), issueManagementUrl);
                 getLog().debug("Using tracker " + converter.getClass().getSimpleName());
             }
