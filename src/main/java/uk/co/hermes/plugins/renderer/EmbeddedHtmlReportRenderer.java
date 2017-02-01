@@ -60,12 +60,15 @@ public class EmbeddedHtmlReportRenderer {
         sink.tableHeaderCell();
         sink.text("Comment");
         sink.tableHeaderCell_();
+        sink.tableRow_();
     }
 
     public void renderTag(RevTag tag) throws IOException {
         sink.tableRow();
         sink.tableCell(tagCssClass);
+        sink.bold();
         sink.text(htmlEncode(tag.getTagName().toUpperCase()));
+        sink.bold_();
         sink.tableCell_();
         sink.tableRow_();
 
@@ -79,15 +82,17 @@ public class EmbeddedHtmlReportRenderer {
         sinkCell(sink, dateCssClass,  date);
         sinkCell(sink, authorCssClass, author);
         sink.tableCell();
+        String commitMessage = htmlEncode(commit.getShortMessage());
         if(messageConverter != null) {
-            sink.rawText(messageConverter.formatCommitMessage(htmlEncode(commit.getShortMessage())));
-        }else {
-            sink.text(htmlEncode(commit.getShortMessage()));
+            commitMessage = messageConverter.formatCommitMessage(commit.getShortMessage());
+            commitMessage = htmlEncode(commitMessage);
         }
+        sink.text(commitMessage.replaceAll("[\\t\\n\\r]", "\\\\\\\\"));
         sink.tableCell_();
         sink.tableRow_();
 
     }
+
     public void renderFooter() {
 
     }

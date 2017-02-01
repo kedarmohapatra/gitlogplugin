@@ -23,8 +23,7 @@ public class JiraIssueLinkConverter implements MessageConverter {
     public String formatCommitMessage(String original) {
         try {
             Matcher matcher = pattern.matcher(original);
-            String result = matcher.replaceAll("<a href=\"" + urlPrefix + "$0\">$0</a>");
-            return result;
+            return matcher.replaceAll("[$0|" + urlPrefix + "$0]");
         } catch (Exception e) {
             // log, but don't let this small setback fail the build
             log.info("Unable to parse issue tracking URL in commit message: " + original, e);

@@ -2,8 +2,10 @@ package uk.co.hermes.plugins.renderer;
 
 import static org.junit.Assert.assertEquals;
 import org.apache.maven.plugin.logging.SystemStreamLog;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class JiraIssueLinkConverterTest {
 
     private static final String PREFIX = "https://jira.atlassian.com/browse/CONF";
