@@ -1,7 +1,5 @@
 package uk.co.hermes.plugins;
 
-import org.apache.maven.doxia.module.confluence.ConfluenceSinkFactory;
-import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.reporting.AbstractMavenReport;
@@ -10,10 +8,7 @@ import uk.co.hermes.plugins.renderer.EmbeddedHtmlReportRenderer;
 import uk.co.hermes.plugins.renderer.JiraIssueLinkConverter;
 import uk.co.hermes.plugins.renderer.MessageConverter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -68,17 +63,8 @@ public class EmbeddedReportMojo extends AbstractMavenReport {
 
     protected void executeReport(Locale locale) throws MavenReportException {
 
-//        Sink sink = getSink();
         try {
-            File outputDirectory = new File(getOutputDirectory());
-
-            String filename = getOutputName() + ".confluence";
-
-            locale = Locale.getDefault();
-
-            ConfluenceSinkFactory factory = new ConfluenceSinkFactory();
-            Sink sink = factory.createSink(outputDirectory, filename);
-            EmbeddedHtmlReportRenderer renderer = new EmbeddedHtmlReportRenderer(sink, getCommitMessageConverter());
+            EmbeddedHtmlReportRenderer renderer = new EmbeddedHtmlReportRenderer(getSink(), getCommitMessageConverter());
 
             EmbeddedReportGenerator embeddedReportGenerator = new EmbeddedReportGenerator(renderer, null, getLog());
             embeddedReportGenerator.openRepository();
