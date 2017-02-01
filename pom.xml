@@ -113,6 +113,18 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
         </dependency>
+        <!--Confluence model and service-->
+        <dependency>
+            <groupId>org.bsc.maven</groupId>
+            <artifactId>maven-confluence-core</artifactId>
+            <version>4.13</version>
+        </dependency>
+        <!-- to prevent "SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder" messages -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.7.12</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
