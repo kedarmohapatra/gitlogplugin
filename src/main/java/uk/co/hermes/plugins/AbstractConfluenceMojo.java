@@ -12,6 +12,7 @@ import org.codehaus.swizzle.confluence.*;
 import uk.co.hermes.plugins.model.Site;
 
 import java.io.StringWriter;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.Map;
@@ -35,6 +36,13 @@ public abstract class AbstractConfluenceMojo extends AbstractMavenReport {
      */
     @Parameter(property = "confluence.endPoint", defaultValue = "http://localhost:10090/rpc/xmlrpc")
     private String endPoint;
+
+    /**
+     * Home page template source. Template name will be used also as template source for children
+     */
+    @Parameter(defaultValue = "${basedir}/src/site/confluence/template.wiki")
+    protected java.io.File templateWiki;
+
     /**
      * Confluence target confluence spaceKey
      */
@@ -180,7 +188,7 @@ public abstract class AbstractConfluenceMojo extends AbstractMavenReport {
                         parentPageTitle, spaceKey), ex);
             }
         }
-        getProperties().put("parentPageTitle", result.getTitle());
+//        getProperties().put("parentPageTitle", result.getTitle());
 
         return result;
 
@@ -378,5 +386,24 @@ public abstract class AbstractConfluenceMojo extends AbstractMavenReport {
         } catch (Exception e) {
             getLog().warn("confluence logout has failed due exception ", e);
         }
+    }
+
+    protected void setPageUriFormFile( Site.Page page, java.io.File source ) {
+        if( page == null ) {
+            throw new IllegalArgumentException( "page is null!");
+        }
+
+        if (source != null && source.exists() && source.isFile() && source.canRead() ) {
+            page.setUri(source.toURI());
+        }
+        else {
+            try {
+                java.net.URL sourceUrl = getClass().getClassLoader().getResource("defaultTemplate.confluence");
+                page.setUri( sourceUrl.toURI() );
+            } catch (URISyntaxException ex) {
+                // TODO log
+            }
+        }
+
     }
 }

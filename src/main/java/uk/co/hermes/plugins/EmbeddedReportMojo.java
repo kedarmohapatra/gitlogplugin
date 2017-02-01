@@ -98,9 +98,13 @@ public class EmbeddedReportMojo extends AbstractConfluenceMojo {
             } else {
                 embeddedReportGenerator.generate(reportTitle);
             }
+
+            generateProjectReport();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NoGitRepositoryException e) {
+            e.printStackTrace();
+        } catch (MojoExecutionException e) {
             e.printStackTrace();
         }
 
@@ -139,8 +143,16 @@ public class EmbeddedReportMojo extends AbstractConfluenceMojo {
         return converter;
     }
 
-    private void generateProjectReport(final Site site, final Locale locale ) throws MojoExecutionException
+    private void generateProjectReport() throws MojoExecutionException
     {
+
+        /*
+        just testing...
+         */
+        final Site site = createFromFolder();
+        final Locale locale = Locale.getDefault();
+
+
 
         super.confluenceExecute(new ConfluenceTask() {
 
@@ -184,5 +196,16 @@ public class EmbeddedReportMojo extends AbstractConfluenceMojo {
         });
 
 
+    }
+
+    private Site createFromFolder() {
+        final Site result = new Site();
+        //todo add labels
+        final Site.Page home = new Site.Page();
+        home.setName(getTitle());
+        super.setPageUriFormFile(home, templateWiki);
+        result.setHome( home );
+
+        return result;
     }
 }
