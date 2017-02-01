@@ -48,12 +48,12 @@ public class EmbeddedReportMojo extends AbstractMavenReport {
      * Report name "Release Notes"
      */
     @Parameter(property = "reportName", defaultValue = "Release Notes")
-    public String reportName;
+    private String reportName;
     /**
      * Report description defaults to "Generate changelog from git SCM as an internal report"
      */
     @Parameter(property = "reportDescription", defaultValue = "Generate changelog from git SCM")
-    public String reportDescription;
+    private String reportDescription;
 
     @Parameter(property = "project.issueManagement.system")
     private String issueManagementSystem;
